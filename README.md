@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # 🏢 Enterprise TaskFlow — Web
 
@@ -196,4 +196,3 @@ Este projeto é de uso educacional e demonstrativo — desenvolvido como parte d
 *Enterprise TaskFlow — Da arquitetura limpa ao pixel perfeito.*
 
 </div>
-]]>
