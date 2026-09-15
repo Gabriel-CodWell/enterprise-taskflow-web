@@ -2,7 +2,7 @@
 
 # 🏢 Enterprise TaskFlow — Web
 
-**Dashboard corporativo de gestão de tarefas construído para escalar.**
+**Corporate task management dashboard built to scale.**
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -13,148 +13,148 @@
 
 ---
 
-## 🔗 Visão Geral e Integração
+## 🔗 Overview & Integration
 
-Este repositório é o **Front-end** do ecossistema **Enterprise TaskFlow** — um sistema Full Stack de gestão de tarefas corporativas projetado para ambientes logísticos e operacionais.
+This repository is the **Front-end** of the **Enterprise TaskFlow** ecosystem — a Full Stack task management system designed for logistics and corporate environments.
 
-A interface consome diretamente a [**Enterprise TaskFlow API**](https://github.com/seu-usuario/enterprise-taskflow-api), uma API RESTful construída em **.NET 8** com **Clean Architecture**, **CQRS (MediatR)**, **Redis** (cache de 5 min), **RabbitMQ** (mensageria assíncrona) e **SQL Server**.
+The interface directly consumes the [**Enterprise TaskFlow API**](https://github.com/seu-usuario/enterprise-taskflow-api), a RESTful API built with **.NET 8** using **Clean Architecture**, **CQRS (MediatR)**, **Redis** (5-min cache TTL), **RabbitMQ** (async messaging), and **SQL Server**.
 
-> Juntos, API + Web formam um ecossistema Full Stack completo — da persistência e cache distribuído até a experiência do usuário final no navegador.
+> Together, API + Web form a complete Full Stack ecosystem — from persistence and distributed caching to the end-user experience in the browser.
 
 ---
 
-## 🏗️ Decisões Arquiteturais
+## 🏗️ Architectural Decisions
 
-### Autenticação & Segurança
+### Authentication & Security
 
-| Aspecto | Implementação |
+| Aspect | Implementation |
 |---|---|
-| **Protocolo** | JWT Bearer Token emitido pela API |
-| **Armazenamento** | `localStorage` com gerenciamento via Zustand |
-| **Injeção automática** | Axios Interceptor injeta `Authorization: Bearer <token>` em todas as requests |
-| **Expiração** | Interceptor de resposta detecta `401 Unauthorized`, limpa o estado e redireciona ao login |
-| **Rotas protegidas** | `PrivateRoute` wrapper valida sessão antes de renderizar rotas autenticadas |
+| **Protocol** | JWT Bearer Token issued by the API |
+| **Storage** | `localStorage` managed via Zustand |
+| **Auto-injection** | Axios Interceptor injects `Authorization: Bearer <token>` on every request |
+| **Expiration** | Response interceptor detects `401 Unauthorized`, clears state, and redirects to login |
+| **Protected routes** | `PrivateRoute` wrapper validates the session before rendering authenticated routes |
 
-### Gerenciamento de Estado
+### State Management
 
-Utilizo **Zustand** como state manager global por ser:
-- **Minimalista** — sem boilerplate de reducers, actions ou providers;
-- **Type-safe** — integração nativa com TypeScript sem wrappers;
-- **Performático** — subscriptions granulares que evitam re-renders desnecessários.
+**Zustand** was chosen as the global state manager because it is:
+- **Minimal** — no boilerplate from reducers, actions, or providers;
+- **Type-safe** — native TypeScript integration without wrappers;
+- **Performant** — granular subscriptions that prevent unnecessary re-renders.
 
-As stores são divididas por domínio:
+Stores are split by domain:
 
 ```
 stores/
-├── useAuthStore.ts    → Token JWT, dados do usuário, login/logout
-└── useTaskStore.ts    → Tarefas pendentes, loading states, ações
+├── useAuthStore.ts    → JWT token, user data, login/logout
+└── useTaskStore.ts    → Pending tasks, loading states, actions
 ```
 
-### Componentização
+### Componentization
 
-A estrutura segue o padrão de **Feature-based Organization**, separando responsabilidades de forma clara:
+The structure follows a **Feature-based Organization** pattern, clearly separating responsibilities:
 
 ```
 src/
-├── components/        → Componentes reutilizáveis de UI (Button, Card, Modal...)
-├── hooks/             → Custom hooks encapsulando lógica de negócio
-├── pages/             → Componentes de página (Login, Dashboard)
-├── routes/            → Configuração do React Router + PrivateRoute
-├── services/api/      → Instância Axios, interceptors e módulos de endpoint
-├── stores/            → Zustand stores por domínio
-├── types/             → Interfaces e tipos TypeScript compartilhados
-├── App.tsx            → Componente raiz com Provider de rotas
-├── main.tsx           → Entry point da aplicação
+├── components/        → Reusable UI components (Button, Card, Modal...)
+├── hooks/             → Custom hooks encapsulating business logic
+├── pages/             → Page-level components (Login, Dashboard)
+├── routes/            → React Router config + PrivateRoute
+├── services/api/      → Axios instance, interceptors, and endpoint modules
+├── stores/            → Zustand stores by domain
+├── types/             → Shared TypeScript interfaces and types
+├── App.tsx            → Root component with route providers
+├── main.tsx           → Application entry point
 └── index.css          → Design System (Tailwind v4 @theme tokens)
 ```
 
 ### Design System
 
-O CSS é construído sobre o sistema de **@theme tokens** do Tailwind CSS v4, garantindo consistência visual sem classes arbitrárias:
+CSS is built on top of Tailwind CSS v4's **@theme token** system, ensuring visual consistency without arbitrary classes:
 
-| Token | Uso |
+| Token | Usage |
 |---|---|
-| `brand-*` | Cores primárias da marca (blue scale) |
-| `surface-*` | Tons neutros para backgrounds e texto (slate scale) |
-| `success-*` / `danger-*` / `warning-*` | Feedback visual de status |
-| `font-sans` | Inter (Google Fonts) — tipografia profissional |
+| `brand-*` | Primary brand colors (blue scale) |
+| `surface-*` | Neutral tones for backgrounds and text (slate scale) |
+| `success-*` / `danger-*` / `warning-*` | Visual status feedback |
+| `font-sans` | Inter (Google Fonts) — professional typography |
 
-> A interface opera em **dark mode por padrão**, seguindo a tendência de dashboards corporativos modernos que priorizam conforto visual em operações prolongadas.
+> The interface operates in **dark mode by default**, following the trend of modern corporate dashboards that prioritize visual comfort during extended operations.
 
 ---
 
-## ⚡ Funcionalidades
+## ⚡ Features
 
-| Funcionalidade | Endpoint Consumido | Descrição |
+| Feature | Consumed Endpoint | Description |
 |---|---|---|
-| 🔐 **Login** | `POST /api/auth/login` | Autenticação com username/password. Armazena o JWT e redireciona ao Dashboard. |
-| 📋 **Listagem de Tarefas** | `GET /api/tasks/pending` | Exibe todas as tarefas pendentes. A API serve dados do cache Redis (TTL 5 min) para alta performance. |
-| ✅ **Completar Tarefa** | `POST /api/tasks/{id}/complete` | Marca a tarefa como concluída. A API invalida o cache e publica um evento no RabbitMQ. A UI atualiza instantaneamente. |
+| 🔐 **Login** | `POST /api/auth/login` | Authentication with username/password. Stores the JWT and redirects to the Dashboard. |
+| 📋 **Task Listing** | `GET /api/tasks/pending` | Displays all pending tasks. The API serves data from Redis cache (5-min TTL) for high performance. |
+| ✅ **Complete Task** | `POST /api/tasks/{id}/complete` | Marks the task as completed. The API invalidates the cache and publishes an event to RabbitMQ. The UI updates instantly. |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Camada | Tecnologia | Versão | Propósito |
+| Layer | Technology | Version | Purpose |
 |---|---|---|---|
-| **UI Library** | React | 19.x | Construção de interfaces declarativas |
-| **Linguagem** | TypeScript | 6.0 | Tipagem estática e segurança em tempo de compilação |
-| **Build Tool** | Vite | 8.x | HMR instantâneo e builds otimizados |
-| **Estilização** | Tailwind CSS | 4.x | Utility-first CSS com design tokens customizados |
-| **Roteamento** | React Router DOM | 7.x | SPA routing com rotas protegidas |
-| **HTTP Client** | Axios | 1.x | Requisições HTTP com interceptors para JWT |
-| **Estado Global** | Zustand | 5.x | State management minimalista e performático |
-| **Lint** | Oxlint | 1.x | Linting rápido com regras React + TypeScript |
+| **UI Library** | React | 19.x | Declarative interface building |
+| **Language** | TypeScript | 6.0 | Static typing and compile-time safety |
+| **Build Tool** | Vite | 8.x | Instant HMR and optimized builds |
+| **Styling** | Tailwind CSS | 4.x | Utility-first CSS with custom design tokens |
+| **Routing** | React Router DOM | 7.x | SPA routing with protected routes |
+| **HTTP Client** | Axios | 1.x | HTTP requests with JWT interceptors |
+| **Global State** | Zustand | 5.x | Minimal and performant state management |
+| **Lint** | Oxlint | 1.x | Fast linting with React + TypeScript rules |
 
 ---
 
-## 🚀 Como Executar
+## 🚀 Getting Started
 
-### Pré-requisitos
+### Prerequisites
 
 - **Node.js** ≥ 18
 - **npm** ≥ 9
-- [**Enterprise TaskFlow API**](https://github.com/seu-usuario/enterprise-taskflow-api) rodando na porta `5000`
+- [**Enterprise TaskFlow API**](https://github.com/seu-usuario/enterprise-taskflow-api) running on port `5000`
 
-### Passo a passo
+### Step by step
 
 ```bash
-# 1. Clone o repositório
+# 1. Clone the repository
 git clone https://github.com/seu-usuario/enterprise-taskflow-web.git
 cd enterprise-taskflow-web
 
-# 2. Instale as dependências
+# 2. Install dependencies
 npm install
 
-# 3. Configure o ambiente
+# 3. Set up the environment
 cp .env.example .env
 ```
 
-Edite o arquivo `.env` com a URL da sua API local:
+Edit the `.env` file with your local API URL:
 
 ```env
 VITE_API_BASE_URL=http://localhost:5000/api
 ```
 
 ```bash
-# 4. Inicie o servidor de desenvolvimento
+# 4. Start the development server
 npm run dev
 ```
 
-A aplicação estará disponível em **http://localhost:5173**.
+The application will be available at **http://localhost:5173**.
 
-### Scripts disponíveis
+### Available Scripts
 
-| Comando | Descrição |
+| Command | Description |
 |---|---|
-| `npm run dev` | Inicia o servidor de desenvolvimento com HMR |
-| `npm run build` | Gera o bundle de produção otimizado |
-| `npm run preview` | Serve o build de produção localmente |
-| `npm run lint` | Executa o Oxlint para análise estática |
+| `npm run dev` | Starts the development server with HMR |
+| `npm run build` | Generates the optimized production bundle |
+| `npm run preview` | Serves the production build locally |
+| `npm run lint` | Runs Oxlint for static analysis |
 
 ---
 
-## 🔄 Fluxo de Integração com a API
+## 🔄 API Integration Flow
 
 ```
 ┌─────────────────────┐       HTTP/JWT        ┌──────────────────────────┐
@@ -169,30 +169,30 @@ A aplicação estará disponível em **http://localhost:5173**.
         :5173                                         :5000
 ```
 
-1. **Login** → O front-end envia credenciais via `POST`. A API retorna um JWT válido por 1h.
-2. **Dashboard** → Axios injeta o token automaticamente. A API retorna tarefas do cache Redis.
-3. **Completar** → O front-end dispara o `POST`. A API marca a tarefa, invalida o cache e publica no RabbitMQ.
+1. **Login** → The front-end sends credentials via `POST`. The API returns a JWT valid for 1 hour.
+2. **Dashboard** → Axios injects the token automatically. The API returns tasks from Redis cache.
+3. **Complete** → The front-end fires the `POST`. The API marks the task, invalidates the cache, and publishes to RabbitMQ.
 
 ---
 
-## 📁 Variáveis de Ambiente
+## 📁 Environment Variables
 
-| Variável | Obrigatória | Descrição |
+| Variable | Required | Description |
 |---|---|---|
-| `VITE_API_BASE_URL` | ✅ | URL base da Enterprise TaskFlow API (ex: `http://localhost:5000/api`) |
+| `VITE_API_BASE_URL` | ✅ | Base URL for the Enterprise TaskFlow API (e.g., `http://localhost:5000/api`) |
 
 ---
 
-## 📄 Licença
+## 📄 License
 
-Este projeto é de uso educacional e demonstrativo — desenvolvido como parte de um portfólio Full Stack profissional.
+This project is for educational and demonstration purposes — developed as part of a professional Full Stack portfolio.
 
 ---
 
 <div align="center">
 
-**Feito com ☕ e boas práticas por [Gabriel CodWell](https://www.linkedin.com/in/gabriel-codwell-7b060a433/)**
+**Made with ❤️ and best practices by [Gabriel CodWell](https://www.linkedin.com/in/gabriel-codwell-7b060a433/)**
 
-*Enterprise TaskFlow — Da arquitetura limpa ao pixel perfeito.*
+*Enterprise TaskFlow — From clean architecture to the perfect pixel.*
 
 </div>
