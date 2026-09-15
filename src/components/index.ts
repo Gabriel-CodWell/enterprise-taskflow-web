@@ -1,2 +1,2 @@
-// Barrel exports for shared/reusable components
-export {}
+export { TaskCard } from './TaskCard'
+export { CreateTaskModal } from './CreateTaskModal'

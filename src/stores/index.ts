@@ -1,2 +1,2 @@
-// Barrel exports for store modules
-export {}
+export { useAuthStore } from './useAuthStore'
+export { useTaskStore } from './useTaskStore'

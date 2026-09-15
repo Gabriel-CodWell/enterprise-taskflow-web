@@ -158,10 +158,10 @@ The application will be available at **http://localhost:5173**.
 
 ```
 ┌─────────────────────┐       HTTP/JWT        ┌──────────────────────────┐
-│                     │ ───────────────────▶  │                          │
+│                     │ ────────────────────> │                          │
 │   Enterprise        │                       │   Enterprise             │
-│   TaskFlow Web      │  ◀───────────────── │   TaskFlow API           │
-│                     │       JSON            │                          │
+│   TaskFlow Web      │ <──────────────────── │   TaskFlow API           │
+│                     │         JSON          │                          │
 │   React + TS        │                       │   .NET 8                 │
 │   Vite + Tailwind   │                       │   Clean Architecture     │
 │                     │                       │   Redis + RabbitMQ       │
@@ -191,7 +191,7 @@ This project is for educational and demonstration purposes — developed as part
 
 <div align="center">
 
-**Made with ❤️ and best practices by [Gabriel CodWell](https://www.linkedin.com/in/gabriel-codwell-7b060a433/)**
+**Built with ❤️ and best practices by [Gabriel CodWell](https://www.linkedin.com/in/gabriel-codwell-7b060a433/)**
 
 *Enterprise TaskFlow — From clean architecture to the perfect pixel.*
 
